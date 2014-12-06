@@ -1,4 +1,4 @@
-config
-======
+util
+====
 
-Configuration library for C#
+Configuration and logging library for C#
