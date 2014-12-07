@@ -6,8 +6,8 @@ namespace Fithian.Logging
     {
         public ConsoleLogger(LoggerConfig config, Type callingClass)
             : base(config, callingClass) {}
-        public override void Write(String line) {
-            Console.Write(line);
+        public override void Write(string line) {
+            Console.WriteLine(line);
         }
     }
 }

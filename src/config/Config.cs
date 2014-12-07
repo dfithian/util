@@ -7,7 +7,7 @@ namespace Fithian.Config
 {
     public class Config
     {
-        public static T FromFile<T>(String filename, Logger logger) {
+        public static T FromFile<T>(string filename, Logger logger) {
             T config = default(T);
             try {
                 StreamReader sr = new StreamReader(filename);

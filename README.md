@@ -12,7 +12,7 @@ Configuration and logging library for C#
  * See test/src/logger.cfg and src/LoggerConfig.cs for an example of how to format the log config file (hint: use JSON)
 
 ```
-LoggerFactory.InitializeFromFile(/*location of config*/); //Will be unneeded in the future potentially
+LoggerFactory.FromFile(/*location of config*/);
 Logger logger = LoggerFactory.GetLogger</*current class*/>();
 ```
 

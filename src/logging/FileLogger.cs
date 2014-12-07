@@ -7,9 +7,9 @@ namespace Fithian.Logging
     {
         public FileLogger(LoggerConfig config, Type callingClass)
             : base(config, callingClass) {}
-        public override void Write(String line) {
+        public override void Write(string line) {
             using (StreamWriter sw = File.AppendText(this.config.filename)) {
-                sw.Write(line);
+                sw.WriteLine(line);
             }
         }
     }

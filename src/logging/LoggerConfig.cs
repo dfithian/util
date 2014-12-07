@@ -1,16 +1,21 @@
 using System;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Fithian.Logging
 {
     public class LoggerConfig
     {
         [JsonPropertyAttribute("filename")]
-        public string filename;
-        [JsonPropertyAttribute("debugEnabled")]
-        public bool debugEnabled;
-        [JsonPropertyAttribute("logType")]
-        public string logType;
+        public string filename {get; set;}
+        [JsonPropertyAttribute("pattern")]
+        public string pattern {get; set;}
+        private string datePattern = null;
+        [JsonPropertyAttribute("level")]
+        public string logLevel {get; set;}
+        private LogLevel level = null;
+        [JsonPropertyAttribute("type")]
+        public string logType {get; set;}
         private Type type = null;
 
         public Type GetLogType() {
@@ -22,12 +27,21 @@ namespace Fithian.Logging
             return this.type;
         }
 
-        public static LoggerConfig SilentConfig() {
-            LoggerConfig silentConfig = new LoggerConfig();
-            silentConfig.filename = "";
-            silentConfig.debugEnabled = false;
-            silentConfig.logType = "SilentLogger";
-            return silentConfig;
+        public string GetDatePattern() {
+            if (this.datePattern == null) {
+                Regex regex = new Regex("(?<=\\{).*?(?=\\})");
+                Match match = regex.Match(this.pattern);
+                if (match.Success) this.datePattern = match.Value;
+            }
+            return this.datePattern;
         }
+
+        public LogLevel GetLogLevel() {
+            if (this.level == null) this.level = LogLevel.FromString(this.logLevel);
+            return this.level;
+        }
+
+        public const string DEFAULT_PATTERN = "{H:mm:ss.fff} %C [%L] $LINE";
+        public const int CLASS_NAME_LENGTH = 20;
     }
 }

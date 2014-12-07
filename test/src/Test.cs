@@ -8,13 +8,17 @@ namespace Test
     public class Test
     {
         static void Main(string[] args) {
-            Logger silentLogger = LoggerFactory.GetLogger<Test>();
             LoggerFactory.FromFile(Directory.GetCurrentDirectory() + "/test/src/logger.cfg");
             Logger logger = LoggerFactory.GetLogger<Test>();
-            logger.Info("Created a silent logger first... I think. Type is " + silentLogger.GetType().ToString());
             logger.Debug("This is a test from Test!");
             TestConfig testConfig = Config.FromFile<TestConfig>(Directory.GetCurrentDirectory() + "/test/src/" + TestConfig.filename, logger);
             testConfig.Debug();
+            logger.Trace("This is a TRACE log");
+            logger.Debug("This is a DEBUG log");
+            logger.Info("This is an INFO log");
+            logger.Warn("This is a WARN log");
+            logger.Error("This is an ERROR log");
+            logger.Fatal("This is a FATAL log");
         }
     }
 }
