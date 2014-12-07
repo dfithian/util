@@ -9,7 +9,7 @@ namespace Test
     {
         static void Main(string[] args) {
             LoggerFactory.InitializeFromFile(Directory.GetCurrentDirectory() + "/test/src/logger.cfg");
-            Logger logger = LoggerFactory.GetLogger(typeof(Test));
+            Logger logger = LoggerFactory.GetLogger<Test>();
             logger.Debug("This is a test from Test!");
             TestConfig testConfig = Config.FromFile<TestConfig>(Directory.GetCurrentDirectory() + "/test/src/" + TestConfig.filename, logger);
             testConfig.Debug();

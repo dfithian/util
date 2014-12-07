@@ -15,18 +15,15 @@ namespace Fithian.Logging
             config = (LoggerConfig)JsonConvert.DeserializeObject(sr.ReadToEnd(), typeof(LoggerConfig));
         }
 
+        //Need to be able to initialize without finding a config file, but also without throwing exception later
         private static void InitializeFromDefault() {
             throw new FileNotFoundException("Not yet implemented; no file from which to initialize");
         }
 
-        public static Logger GetLogger(Type callingClass) {
+        public static Logger GetLogger<T>() {
             if (string.IsNullOrEmpty(config.filename)) InitializeFromDefault();
             ConstructorInfo c = config.GetLogType().GetConstructor(new Type[] {typeof(LoggerConfig), typeof(Type)});
-            return (Logger)c.Invoke(new object[] {config, callingClass});
-        }
-
-        public static Logger GetLogger() {
-            return GetLogger(config.GetLogType());
+            return (Logger)c.Invoke(new object[] {config, typeof(T)});
         }
     }
 }

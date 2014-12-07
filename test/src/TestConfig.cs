@@ -17,7 +17,7 @@ namespace Test
         public String[] arrayField;
 
         public void Debug() {
-            Logger logger = LoggerFactory.GetLogger(typeof(TestConfig));
+            Logger logger = LoggerFactory.GetLogger<TestConfig>();
             logger.Debug("stringField: " + stringField);
             logger.Debug("intField: " + intField.ToString());
             logger.Debug("boolField: " + boolField.ToString());
