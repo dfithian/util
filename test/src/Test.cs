@@ -5,11 +5,11 @@ using System.IO;
 
 namespace Test
 {
-    public class Test
+    public class TestMain
     {
         static void Main(string[] args) {
             LoggerFactory.FromFile(Directory.GetCurrentDirectory() + "/test/src/logger.cfg");
-            Logger logger = LoggerFactory.GetLogger<Test>();
+            Logger logger = LoggerFactory.GetLogger<TestMain>();
             logger.Debug("This is a test from Test!");
             TestConfig testConfig = Config.FromFile<TestConfig>(Directory.GetCurrentDirectory() + "/test/src/" + TestConfig.filename, logger);
             testConfig.Debug();

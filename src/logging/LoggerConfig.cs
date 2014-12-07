@@ -14,17 +14,32 @@ namespace Fithian.Logging
         [JsonPropertyAttribute("level")]
         public string logLevel {get; set;}
         private LogLevel level = null;
-        [JsonPropertyAttribute("type")]
-        public string logType {get; set;}
-        private Type type = null;
+        [JsonPropertyAttribute("defaultLogger")]
+        private string defaultLogger;
+        private Type defaultLoggerType;
+        [JsonPropertyAttribute("loggers")]
+        private LoggerType[] loggers {get; set;}
+        private class LoggerType
+        {
+            [JsonPropertyAttribute("logger")]
+            public string theLogger {get; set;}
+            [JsonPropertyAttribute("namespace")]
+            public string theNamespace {get; set;}
+            public Type theType = null;
+        }
 
-        public Type GetLogType() {
-            if (this.type == null) {
-                if (string.IsNullOrEmpty(this.logType)) this.type = typeof(ConsoleLogger);
-                else this.type = Type.GetType("Fithian.Logging." + this.logType);
-                if (this.type == null) this.type = typeof(ConsoleLogger); //Still null
+        public Type GetLogType(Type t) {
+            if (this.loggers != null) {
+                foreach (LoggerType loggerType in this.loggers) {
+                    if (t.ToString().Contains(loggerType.theNamespace)) {
+                        if (loggerType.theType == null) loggerType.theType = Type.GetType("Fithian.Logging." + loggerType.theLogger);
+                        if (loggerType.theType != null) return loggerType.theType;
+                    }
+                }
             }
-            return this.type;
+            if (this.defaultLoggerType == null) this.defaultLoggerType = Type.GetType("Fithian.Logging" + this.defaultLogger);
+            if (this.defaultLoggerType != null) return this.defaultLoggerType;
+            return typeof(ConsoleLogger);
         }
 
         public string GetDatePattern() {
