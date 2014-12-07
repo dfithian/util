@@ -21,5 +21,13 @@ namespace Fithian.Logging
             }
             return this.type;
         }
+
+        public static LoggerConfig SilentConfig() {
+            LoggerConfig silentConfig = new LoggerConfig();
+            silentConfig.filename = "";
+            silentConfig.debugEnabled = false;
+            silentConfig.logType = "SilentLogger";
+            return silentConfig;
+        }
     }
 }

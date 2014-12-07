@@ -7,11 +7,11 @@ Configuration and logging library for C#
 
 * Two types of Logger, FileLogger and ConsoleLogger
 * Need a config file to load from
- * Default config location is not yet implemented
+ * Default config filename is log.json and is searched for in the PATH environment variable directories
  * See test/src/Test.cs for an example of how to initialize the LoggerFactory
  * See test/src/logger.cfg and src/LoggerConfig.cs for an example of how to format the log config file (hint: use JSON)
 
-```csharp
+```
 LoggerFactory.InitializeFromFile(/*location of config*/); //Will be unneeded in the future potentially
 Logger logger = LoggerFactory.GetLogger</*current class*/>();
 ```
@@ -24,6 +24,6 @@ Logger logger = LoggerFactory.GetLogger</*current class*/>();
 * See test/src/Test.cs for an example of how to initialize a config
 * See test/src/test.cfg and test/src/TestConfig.cs for an example of how to format the config file (hint: use JSON)
 
-```csharp
+```
 TestConfig config = Config.FromFile<TestConfig>(/*location of config*/);
 ```

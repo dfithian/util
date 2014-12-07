@@ -9,7 +9,7 @@ namespace Fithian.Logging
     {
         private static LoggerConfig config;
 
-        public static void InitializeFromFile(String configFilename) {
+        public static void FromFile(String configFilename) {
             if (!File.Exists(configFilename)) throw new FileNotFoundException("File " + configFilename + " doesn't exist");
             StreamReader sr = new StreamReader(configFilename);
             config = (LoggerConfig)JsonConvert.DeserializeObject(sr.ReadToEnd(), typeof(LoggerConfig));
@@ -17,11 +17,27 @@ namespace Fithian.Logging
 
         //Need to be able to initialize without finding a config file, but also without throwing exception later
         private static void InitializeFromDefault() {
-            throw new FileNotFoundException("Not yet implemented; no file from which to initialize");
+            String[] allPaths = Environment.GetEnvironmentVariable("PATH").Split(new char[] {';', ':'});
+            if (allPaths != null) {
+                foreach (String path in allPaths) {
+                    if (Directory.Exists(path)) {
+                        String[] allFilenames = Directory.GetFiles(path);
+                        if (allFilenames != null) {
+                            foreach (String filename in allFilenames) {
+                                if (filename == "log.json") {
+                                    FromFile(path + "/" + filename);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            config = LoggerConfig.SilentConfig();
         }
 
         public static Logger GetLogger<T>() {
-            if (string.IsNullOrEmpty(config.filename)) InitializeFromDefault();
+            if (config == null || config.filename == null) InitializeFromDefault();
             ConstructorInfo c = config.GetLogType().GetConstructor(new Type[] {typeof(LoggerConfig), typeof(Type)});
             return (Logger)c.Invoke(new object[] {config, typeof(T)});
         }
