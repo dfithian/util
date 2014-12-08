@@ -58,6 +58,7 @@ namespace Fithian.Logging
         }
         private string Format(string line, LogLevel logLevel) {
             string className = this.callingClass.ToString();
+            //Stretch or shrink class name to fit within 20 characters
             if (className.Length > LoggerConfig.CLASS_NAME_LENGTH) {
                 className = className.Substring(className.Length - LoggerConfig.CLASS_NAME_LENGTH, LoggerConfig.CLASS_NAME_LENGTH);
             } else {
@@ -65,10 +66,10 @@ namespace Fithian.Logging
             }
             DateTime dateTime = DateTime.Now;
             string datePattern = this.config.GetDatePattern();
-            return this.config.pattern.Replace("{"+datePattern+"}", dateTime.ToString(datePattern))
-                .Replace("%C", className)
-                .Replace("%L", logLevel.Value)
-                .Replace("$LINE", line);
+            return this.config.pattern.Replace("{"+datePattern+"}", dateTime.ToString(datePattern)) //Format date based on config
+                .Replace("%C", className) //Insert class name if it's in the pattern
+                .Replace("%L", logLevel.Value) //Replace log level if it's in the pattern
+                + line; //Append the line at the end
         }
         public abstract void Write(string line);
 

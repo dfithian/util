@@ -11,7 +11,7 @@ namespace Fithian.Logging
         private static bool initialized = false;
 
         public static void FromFile(string configFilename) {
-            initialized = false;
+            initialized = false; //Considier initialized=false until new config is loaded
             if (!File.Exists(configFilename)) throw new FileNotFoundException("File " + configFilename + " doesn't exist");
             StreamReader sr = new StreamReader(configFilename);
             config = (LoggerConfig)JsonConvert.DeserializeObject(sr.ReadToEnd(), typeof(LoggerConfig));

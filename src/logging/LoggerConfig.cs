@@ -25,6 +25,7 @@ namespace Fithian.Logging
             public string logLevel {get; set;}
             private LogLevel level = null;
 
+            //Defaults here
             public SingleConfig() {
                 theLogger = "ConsoleLogger";
                 theNamespace = null;
@@ -33,6 +34,7 @@ namespace Fithian.Logging
                 logLevel = "info"; 
             }
 
+            //Extract the date pattern from the config
             public string GetDatePattern() {
                 if (this.datePattern == null) {
                     Regex regex = new Regex("(?<=\\{).*?(?=\\})");
@@ -54,6 +56,7 @@ namespace Fithian.Logging
         }
 
         public Logger GetLoggerForType(Type t) {
+            //Search for this class's type in scope; use default if not found
             if (this.loggerConfigs != null) {
                 foreach (SingleConfig singleConfig in this.loggerConfigs) {
                     if (!string.IsNullOrEmpty(singleConfig.theNamespace) &&
