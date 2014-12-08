@@ -11,7 +11,7 @@ namespace Test
             LoggerFactory.FromFile(Directory.GetCurrentDirectory() + "/test/src/logger.cfg");
             Logger logger = LoggerFactory.GetLogger<TestMain>();
             logger.Debug("This is a test from Test!");
-            TestConfig testConfig = Config.FromFile<TestConfig>(Directory.GetCurrentDirectory() + "/test/src/" + TestConfig.filename, logger);
+            TestConfig testConfig = TestConfig.FromFile(Directory.GetCurrentDirectory() + "/test/src/" + TestConfig.filename, logger);
             testConfig.Debug();
             logger.Trace("This is a TRACE log");
             logger.Debug("This is a DEBUG log");

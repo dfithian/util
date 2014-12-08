@@ -18,11 +18,9 @@ namespace Fithian.Logging
             initialized = true;
         }
 
-        //FIXME add ability to look up a logger by type (i.e. enumerate which namespaces get FileLogger in config)
         public static Logger GetLogger<T>() {
             if (!initialized) throw new InvalidOperationException("LoggerFactory has not been properly initialized");
-            ConstructorInfo c = config.GetLogType(typeof(T)).GetConstructor(new Type[] {typeof(LoggerConfig), typeof(Type)});
-            return (Logger)c.Invoke(new object[] {config, typeof(T)});
+            return config.GetLoggerForType(typeof(T));
         }
     }
 }

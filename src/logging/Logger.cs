@@ -7,13 +7,11 @@ namespace Fithian.Logging
     public abstract class Logger
     {
         protected Type callingClass {get; set;}
-        protected LoggerConfig config {get; set;}
-        public Logger(LoggerConfig config, Type callingClass) {
+        protected LoggerConfig.SingleConfig config {get; set;}
+        protected Logger(LoggerConfig.SingleConfig config, Type callingClass) {
             this.config = config;
             this.callingClass = callingClass;
             if (this.config == null) throw new NullReferenceException("Config was null. Cannot create Logger.");
-            if (this.config.filename == null) throw new NullReferenceException("Filename was null. Cannot create Logger.");
-            if (this.config.pattern == null) this.config.pattern = LoggerConfig.DEFAULT_PATTERN;
             if (this.callingClass == null) throw new NullReferenceException("Calling class was null. Cannot create Logger.");
         }
         public void Trace(string line) {
@@ -73,5 +71,14 @@ namespace Fithian.Logging
                 .Replace("$LINE", line);
         }
         public abstract void Write(string line);
+
+        public static Logger FromConfig(LoggerConfig.SingleConfig config, Type callingClass) {
+            if (config == null || config.theLogger == null) return new ConsoleLogger(config, callingClass);
+            switch (config.theLogger.ToLower()) {
+                case "consolelogger": return new ConsoleLogger(config, callingClass);
+                case "filelogger": return new FileLogger(config, callingClass);
+                default: return new ConsoleLogger(config, callingClass);
+            }
+        }
     }
 }

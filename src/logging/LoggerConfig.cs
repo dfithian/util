@@ -6,57 +6,66 @@ namespace Fithian.Logging
 {
     public class LoggerConfig
     {
-        [JsonPropertyAttribute("filename")]
-        public string filename {get; set;}
-        [JsonPropertyAttribute("pattern")]
-        public string pattern {get; set;}
-        private string datePattern = null;
-        [JsonPropertyAttribute("level")]
-        public string logLevel {get; set;}
-        private LogLevel level = null;
         [JsonPropertyAttribute("defaultLogger")]
-        private string defaultLogger;
-        private Type defaultLoggerType;
+        private SingleConfig defaultConfig {get; set;}
         [JsonPropertyAttribute("loggers")]
-        private LoggerType[] loggers {get; set;}
-        private class LoggerType
+        private SingleConfig[] loggerConfigs {get; set;}
+        public class SingleConfig
         {
             [JsonPropertyAttribute("logger")]
             public string theLogger {get; set;}
             [JsonPropertyAttribute("namespace")]
             public string theNamespace {get; set;}
-            public Type theType = null;
+            [JsonPropertyAttribute("filename")]
+            public string filename {get; set;}
+            [JsonPropertyAttribute("pattern")]
+            public string pattern {get; set;}
+            private string datePattern = null;
+            [JsonPropertyAttribute("level")]
+            public string logLevel {get; set;}
+            private LogLevel level = null;
+
+            public SingleConfig() {
+                theLogger = "ConsoleLogger";
+                theNamespace = null;
+                filename = null;
+                pattern = "{H:mm:ss.fff} %C [%L] $LINE";
+                logLevel = "info"; 
+            }
+
+            public string GetDatePattern() {
+                if (this.datePattern == null) {
+                    Regex regex = new Regex("(?<=\\{).*?(?=\\})");
+                    Match match = regex.Match(this.pattern);
+                    if (match.Success) this.datePattern = match.Value;
+                }
+                return this.datePattern;
+            }
+
+            public LogLevel GetLogLevel() {
+                if (this.level == null) this.level = LogLevel.FromString(this.logLevel);
+                return this.level;
+            }
         }
 
-        public Type GetLogType(Type t) {
-            if (this.loggers != null) {
-                foreach (LoggerType loggerType in this.loggers) {
-                    if (t.ToString().Contains(loggerType.theNamespace)) {
-                        if (loggerType.theType == null) loggerType.theType = Type.GetType("Fithian.Logging." + loggerType.theLogger);
-                        if (loggerType.theType != null) return loggerType.theType;
+        public LoggerConfig() {
+            loggerConfigs = new SingleConfig[0] {};
+            defaultConfig = new SingleConfig();
+        }
+
+        public Logger GetLoggerForType(Type t) {
+            if (this.loggerConfigs != null) {
+                foreach (SingleConfig singleConfig in this.loggerConfigs) {
+                    if (!string.IsNullOrEmpty(singleConfig.theNamespace) &&
+                        t.ToString().Contains(singleConfig.theNamespace)) {
+                            return Logger.FromConfig(singleConfig, t);
                     }
                 }
             }
-            if (this.defaultLoggerType == null) this.defaultLoggerType = Type.GetType("Fithian.Logging" + this.defaultLogger);
-            if (this.defaultLoggerType != null) return this.defaultLoggerType;
-            return typeof(ConsoleLogger);
+            if (this.defaultConfig == null) this.defaultConfig = new SingleConfig();
+            return Logger.FromConfig(this.defaultConfig, t);
         }
 
-        public string GetDatePattern() {
-            if (this.datePattern == null) {
-                Regex regex = new Regex("(?<=\\{).*?(?=\\})");
-                Match match = regex.Match(this.pattern);
-                if (match.Success) this.datePattern = match.Value;
-            }
-            return this.datePattern;
-        }
-
-        public LogLevel GetLogLevel() {
-            if (this.level == null) this.level = LogLevel.FromString(this.logLevel);
-            return this.level;
-        }
-
-        public const string DEFAULT_PATTERN = "{H:mm:ss.fff} %C [%L] $LINE";
         public const int CLASS_NAME_LENGTH = 20;
     }
 }
